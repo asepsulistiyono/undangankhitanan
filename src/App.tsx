@@ -46,12 +46,22 @@ function useCountdown(targetDate: string) {
 
 // ============ FLOATING PARTICLES ============
 function FloatingParticles() {
-  const particles = Array.from({ length: 15 }, (_, i) => ({
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const count = isMobile ? 6 : 15;
+  const particles = Array.from({ length: count }, (_, i) => ({
     id: i,
     left: Math.random() * 100,
     delay: Math.random() * 10,
     duration: 8 + Math.random() * 7,
-    size: 8 + Math.random() * 16,
+    size: isMobile ? 10 + Math.random() * 10 : 8 + Math.random() * 16,
     type: ['🌙', '⭐', '✨', '🌿', '🍃'][Math.floor(Math.random() * 5)]
   }));
 
@@ -66,7 +76,7 @@ function FloatingParticles() {
             animationDelay: `${p.delay}s`,
             animationDuration: `${p.duration}s`,
             fontSize: `${p.size}px`,
-            opacity: 0.4
+            opacity: 0.3
           }}
         >
           {p.type}
@@ -90,7 +100,7 @@ function IslamicOrnament({ type }: { type: string }) {
     case 'motif-masjid':
       return (
         <div className="text-center my-4">
-          <svg width="120" height="60" viewBox="0 0 120 60" className="mx-auto" style={{ color: 'var(--primary)' }}>
+          <svg width="100" height="50" viewBox="0 0 120 60" className="mx-auto max-w-[100px] sm:max-w-[120px]" style={{ color: 'var(--primary)' }}>
             <path d="M60 5 L60 15 M55 5 Q60 0 65 5" fill="none" stroke="currentColor" strokeWidth="1.5"/>
             <path d="M30 35 Q30 15 60 15 Q90 15 90 35" fill="none" stroke="currentColor" strokeWidth="1.5"/>
             <rect x="25" y="35" width="70" height="25" fill="none" stroke="currentColor" strokeWidth="1.5"/>
@@ -104,7 +114,7 @@ function IslamicOrnament({ type }: { type: string }) {
     case 'bulan-sabit':
       return (
         <div className="text-center my-4">
-          <svg width="80" height="80" viewBox="0 0 80 80" className="mx-auto" style={{ color: 'var(--primary)' }}>
+          <svg width="60" height="60" viewBox="0 0 80 80" className="mx-auto max-w-[60px] sm:max-w-[80px]" style={{ color: 'var(--primary)' }}>
             <path d="M50 10 A30 30 0 1 0 50 70 A22 22 0 1 1 50 10" fill="none" stroke="currentColor" strokeWidth="1.5"/>
             <polygon points="65,35 67,40 72,40 68,43 70,48 65,45 60,48 62,43 58,40 63,40" fill="currentColor"/>
           </svg>
@@ -113,7 +123,7 @@ function IslamicOrnament({ type }: { type: string }) {
     case 'geometris':
       return (
         <div className="text-center my-4">
-          <svg width="200" height="40" viewBox="0 0 200 40" className="mx-auto" style={{ color: 'var(--primary)' }}>
+          <svg width="100%" height="30" viewBox="0 0 200 40" preserveAspectRatio="xMidYMid meet" className="mx-auto max-w-[280px]" style={{ color: 'var(--primary)' }}>
             <path d="M0 20 L20 0 L40 20 L60 0 L80 20 L100 0 L120 20 L140 0 L160 20 L180 0 L200 20" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.5"/>
             <path d="M0 20 L20 40 L40 20 L60 40 L80 20 L100 40 L120 20 L140 40 L160 20 L180 40 L200 20" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.5"/>
             <circle cx="100" cy="20" r="8" fill="none" stroke="currentColor" strokeWidth="1.5"/>
@@ -124,7 +134,7 @@ function IslamicOrnament({ type }: { type: string }) {
     case 'arabesque':
       return (
         <div className="text-center my-4">
-          <svg width="200" height="40" viewBox="0 0 200 40" className="mx-auto" style={{ color: 'var(--primary)' }}>
+          <svg width="100%" height="30" viewBox="0 0 200 40" preserveAspectRatio="xMidYMid meet" className="mx-auto max-w-[280px]" style={{ color: 'var(--primary)' }}>
             <path d="M20 20 Q50 0 80 20 Q110 40 140 20 Q170 0 200 20" fill="none" stroke="currentColor" strokeWidth="1.5"/>
             <path d="M0 20 Q30 40 60 20 Q90 0 120 20 Q150 40 180 20" fill="none" stroke="currentColor" strokeWidth="1.5"/>
             <circle cx="100" cy="20" r="5" fill="currentColor" opacity="0.4"/>
@@ -148,7 +158,7 @@ function OrnamentBorder({ type }: { type: string }) {
   };
 
   return (
-    <svg width="100%" height="20" viewBox="0 0 90 20" preserveAspectRatio="none" className="my-4" style={{ color: 'var(--primary)' }}>
+    <svg width="100%" height="16" viewBox="0 0 90 20" preserveAspectRatio="xMidYMid meet" className="my-3 sm:my-4 max-w-[280px] mx-auto block" style={{ color: 'var(--primary)' }}>
       <path d={patterns[type] || patterns.modern} fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.4"/>
     </svg>
   );
@@ -164,12 +174,12 @@ function Cover({ data, guestName, onOpen }: { data: InvitationData; guestName: s
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: `linear-gradient(135deg, var(--bg), var(--primary))` }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto" style={{ background: `linear-gradient(135deg, var(--bg), var(--primary))` }}>
       <FloatingParticles />
       <div className="absolute inset-0 islamic-pattern opacity-30" />
       
       <motion.div
-        className="relative text-center px-6 max-w-md mx-auto"
+        className="relative text-center px-4 sm:px-6 max-w-md mx-auto w-full py-8"
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8 }}
@@ -179,12 +189,12 @@ function Cover({ data, guestName, onOpen }: { data: InvitationData; guestName: s
         
         {/* Envelope Icon */}
         <motion.div
-          className="mb-6"
+          className="mb-4 sm:mb-6"
           animate={isOpening ? { scale: 0, opacity: 0 } : { scale: [1, 1.05, 1] }}
           transition={{ repeat: Infinity, duration: 2 }}
         >
-          <div className="w-20 h-20 mx-auto rounded-full flex items-center justify-center" style={{ background: 'var(--primary)', boxShadow: '0 8px 30px rgba(0,0,0,0.2)' }}>
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full flex items-center justify-center" style={{ background: 'var(--primary)', boxShadow: '0 8px 30px rgba(0,0,0,0.2)' }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5">
               <rect x="2" y="4" width="20" height="16" rx="2"/>
               <path d="M2 4l10 8 10-8"/>
             </svg>
@@ -197,8 +207,8 @@ function Cover({ data, guestName, onOpen }: { data: InvitationData; guestName: s
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <p className="text-sm uppercase tracking-[4px] mb-2" style={{ color: 'var(--secondary)' }}>Undangan</p>
-          <h1 className="font-display text-3xl md:text-4xl font-bold mb-2" style={{ color: 'var(--primary)' }}>
+          <p className="text-xs sm:text-sm uppercase tracking-[3px] sm:tracking-[4px] mb-2" style={{ color: 'var(--secondary)' }}>Undangan</p>
+          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-2 px-2" style={{ color: 'white' }}>
             Syukuran Khitanan
           </h1>
           <OrnamentBorder type={data.ornamentId} />
@@ -206,7 +216,7 @@ function Cover({ data, guestName, onOpen }: { data: InvitationData; guestName: s
 
         {/* Child Photo Placeholder */}
         <motion.div
-          className="w-32 h-32 mx-auto rounded-full overflow-hidden mb-4 border-4"
+          className="w-28 h-28 sm:w-32 sm:h-32 mx-auto rounded-full overflow-hidden mb-4 border-4"
           style={{ borderColor: 'var(--secondary)' }}
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -215,7 +225,7 @@ function Cover({ data, guestName, onOpen }: { data: InvitationData; guestName: s
           {data.childName.photo ? (
             <img src={data.childName.photo} alt={data.childName.full} className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-5xl" style={{ background: `linear-gradient(135deg, var(--primary), var(--primary-light))` }}>
+            <div className="w-full h-full flex items-center justify-center text-4xl sm:text-5xl" style={{ background: `linear-gradient(135deg, var(--primary), var(--primary-light))` }}>
               👦
             </div>
           )}
@@ -223,8 +233,8 @@ function Cover({ data, guestName, onOpen }: { data: InvitationData; guestName: s
 
         {/* Child Name */}
         <motion.h2
-          className="font-display text-4xl md:text-5xl font-bold mb-2"
-          style={{ color: 'var(--primary)' }}
+          className="font-display text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 px-2 break-words"
+          style={{ color: 'white' }}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.7 }}
@@ -234,8 +244,8 @@ function Cover({ data, guestName, onOpen }: { data: InvitationData; guestName: s
 
         {/* Date */}
         <motion.p
-          className="text-lg mb-2"
-          style={{ color: 'var(--text-light)' }}
+          className="text-base sm:text-lg mb-2 px-2"
+          style={{ color: 'rgba(255,255,255,0.85)' }}
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.9 }}
@@ -250,8 +260,8 @@ function Cover({ data, guestName, onOpen }: { data: InvitationData; guestName: s
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 1.1 }}
           >
-            <p className="text-sm mb-1" style={{ color: 'var(--text-light)' }}>Kepada Yth.</p>
-            <p className="font-display text-xl font-semibold" style={{ color: 'var(--primary)' }}>
+            <p className="text-xs sm:text-sm mb-1" style={{ color: 'rgba(255,255,255,0.7)' }}>Kepada Yth.</p>
+            <p className="font-display text-lg sm:text-xl font-semibold px-2 break-words" style={{ color: 'white' }}>
               {guestName}
             </p>
           </motion.div>
@@ -260,21 +270,21 @@ function Cover({ data, guestName, onOpen }: { data: InvitationData; guestName: s
         {/* Open Button */}
         <motion.button
           onClick={handleOpen}
-          className="mt-8 btn-primary text-lg px-8 py-4"
+          className="mt-6 sm:mt-8 btn-primary text-base sm:text-lg px-6 sm:px-8 py-3 sm:py-4"
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 1.3 }}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Sparkles size={20} />
+          <Sparkles size={18} />
           Buka Undangan
         </motion.button>
 
         {/* Parents */}
         <motion.p
-          className="mt-6 text-sm"
-          style={{ color: 'var(--text-light)' }}
+          className="mt-4 sm:mt-6 text-xs sm:text-sm px-4"
+          style={{ color: 'rgba(255,255,255,0.7)' }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
@@ -314,9 +324,9 @@ function Section({ children, className = '', id = '' }: { children: React.ReactN
     <section
       id={id}
       ref={ref}
-      className={`py-16 md:py-20 px-4 md:px-8 ${className} ${isVisible ? 'scroll-reveal visible' : 'scroll-reveal'}`}
+      className={`py-10 sm:py-14 md:py-20 px-4 sm:px-6 ${className} ${isVisible ? 'scroll-reveal visible' : 'scroll-reveal'}`}
     >
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-xl sm:max-w-2xl mx-auto">
         {children}
       </div>
     </section>
@@ -372,11 +382,11 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
 
       {/* Music Toggle */}
       <button
-        className="fixed top-4 right-4 z-40 w-10 h-10 rounded-full flex items-center justify-center shadow-lg"
+        className="fixed top-3 right-3 sm:top-4 sm:right-4 z-40 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-lg"
         style={{ background: 'var(--primary)', color: 'white' }}
         title="Toggle Music"
       >
-        <Music size={18} />
+        <Music size={16} />
       </button>
 
       {/* Share Button */}
@@ -386,16 +396,16 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
           const text = `Undangan Khitanan ${data.childName.full}\n${data.dateLabel}\n${data.venueMain}, ${data.city}\n\n${url}`;
           window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
         }}
-        className="fixed top-4 left-4 z-40 w-10 h-10 rounded-full flex items-center justify-center shadow-lg"
+        className="fixed top-3 left-3 sm:top-4 sm:left-4 z-40 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shadow-lg"
         style={{ background: '#25D366', color: 'white' }}
         title="Bagikan via WhatsApp"
       >
-        <Share2 size={18} />
+        <Share2 size={16} />
       </button>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden" style={{ background: 'var(--bg-card)', borderTop: '1px solid rgba(0,0,0,0.1)' }}>
-        <div className="flex justify-around py-2">
+      <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden safe-bottom" style={{ background: 'var(--bg-card)', borderTop: '1px solid rgba(0,0,0,0.1)', boxShadow: '0 -2px 10px rgba(0,0,0,0.05)' }}>
+        <div className="flex justify-around py-1.5 px-1">
           {[
             { icon: '🏠', label: 'Beranda', target: 'hero' },
             { icon: '📅', label: 'Acara', target: 'acara' },
@@ -405,10 +415,10 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
             <a
               key={item.target}
               href={`#${item.target}`}
-              className="flex flex-col items-center gap-0.5 px-3 py-1 text-xs"
+              className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg text-[10px] sm:text-xs min-w-[60px]"
               style={{ color: 'var(--primary)' }}
             >
-              <span className="text-lg">{item.icon}</span>
+              <span className="text-base sm:text-lg">{item.icon}</span>
               <span className="font-medium">{item.label}</span>
             </a>
           ))}
@@ -418,11 +428,11 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
       {/* Admin Button */}
       <button
         onClick={() => setShowAdmin(true)}
-        className="fixed bottom-16 md:bottom-4 right-4 z-40 w-12 h-12 rounded-full flex items-center justify-center shadow-lg"
+        className="fixed bottom-16 sm:bottom-20 md:bottom-4 right-3 sm:right-4 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow-lg"
         style={{ background: 'var(--primary)', color: 'white' }}
         title="Admin Panel"
       >
-        <Settings size={20} />
+        <Settings size={18} />
       </button>
 
       {/* ====== HERO SECTION ====== */}
@@ -430,20 +440,20 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
         <div className="absolute inset-0 islamic-pattern opacity-20" />
         <div className="absolute inset-0 geometric-pattern opacity-10" />
         
-        <div className="relative z-20 text-center px-4 py-20">
+        <div className="relative z-20 text-center px-4 sm:px-6 py-16 sm:py-20 w-full max-w-lg mx-auto">
           <IslamicOrnament type={data.islamicOrnamentId} />
           
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', delay: 0.2 }}
-            className="w-40 h-40 md:w-48 md:h-48 mx-auto rounded-full overflow-hidden mb-6 border-4 shadow-2xl"
+            className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 mx-auto rounded-full overflow-hidden mb-4 sm:mb-6 border-4 shadow-2xl"
             style={{ borderColor: 'var(--secondary)' }}
           >
             {data.childName.photo ? (
               <img src={data.childName.photo} alt={data.childName.full} className="w-full h-full object-cover animate-ken-burns" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-7xl" style={{ background: `linear-gradient(135deg, var(--primary), var(--primary-light))` }}>
+              <div className="w-full h-full flex items-center justify-center text-5xl sm:text-6xl md:text-7xl" style={{ background: `linear-gradient(135deg, var(--primary), var(--primary-light))` }}>
                 👦
               </div>
             )}
@@ -454,17 +464,17 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            <p className="text-sm uppercase tracking-[4px] mb-2" style={{ color: 'var(--secondary)' }}>
+            <p className="text-xs sm:text-sm uppercase tracking-[3px] sm:tracking-[4px] mb-2" style={{ color: 'var(--secondary)' }}>
               Bismillahirrahmanirrahim
             </p>
-            <h1 className="font-display text-4xl md:text-6xl font-bold mb-3" style={{ color: 'white' }}>
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-2 sm:mb-3 px-2 break-words" style={{ color: 'white' }}>
               {data.childName.full}
             </h1>
             <OrnamentBorder type={data.ornamentId} />
-            <p className="text-xl md:text-2xl mb-6" style={{ color: 'rgba(255,255,255,0.9)' }}>
+            <p className="text-lg sm:text-xl md:text-2xl mb-4 sm:mb-6" style={{ color: 'rgba(255,255,255,0.9)' }}>
               Syukuran Khitanan
             </p>
-            <p className="text-lg mb-8" style={{ color: 'rgba(255,255,255,0.8)' }}>
+            <p className="text-base sm:text-lg mb-6 sm:mb-8" style={{ color: 'rgba(255,255,255,0.8)' }}>
               {data.dateLabel}
             </p>
           </motion.div>
@@ -479,22 +489,22 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
 
           {guestName && (
             <motion.div
-              className="mt-8"
+              className="mt-6 sm:mt-8"
               initial={{ y: 30, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.8 }}
             >
-              <p className="text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>Kepada Yth.</p>
-              <p className="font-display text-xl font-semibold" style={{ color: 'white' }}>{guestName}</p>
+              <p className="text-xs sm:text-sm" style={{ color: 'rgba(255,255,255,0.7)' }}>Kepada Yth.</p>
+              <p className="font-display text-lg sm:text-xl font-semibold px-2 break-words" style={{ color: 'white' }}>{guestName}</p>
             </motion.div>
           )}
 
           <motion.div
-            className="mt-10"
+            className="mt-8 sm:mt-10"
             animate={{ y: [0, 10, 0] }}
             transition={{ repeat: Infinity, duration: 2 }}
           >
-            <ChevronDown size={30} style={{ color: 'rgba(255,255,255,0.6)' }} />
+            <ChevronDown size={24} style={{ color: 'rgba(255,255,255,0.6)' }} />
           </motion.div>
         </div>
       </div>
@@ -503,17 +513,17 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
       <Section>
         <div className="text-center">
           <IslamicOrnament type="geometris" />
-          <div className="card-elegant p-8 md:p-10">
-            <p className="arabic-text text-2xl md:text-3xl mb-6 leading-loose" style={{ color: 'var(--primary)' }}>
+          <div className="card-elegant p-4 sm:p-6 md:p-8 lg:p-10">
+            <p className="arabic-text text-xl sm:text-2xl md:text-3xl mb-4 sm:mb-6 leading-relaxed sm:leading-loose px-2" style={{ color: 'var(--primary)' }}>
               {data.quote.arabic}
             </p>
-            <div className="ornament-divider mb-4">
-              <Star size={16} style={{ color: 'var(--secondary)' }} />
+            <div className="ornament-divider mb-3 sm:mb-4">
+              <Star size={14} style={{ color: 'var(--secondary)' }} />
             </div>
-            <p className="text-base md:text-lg italic mb-4" style={{ color: 'var(--text)' }}>
+            <p className="text-sm sm:text-base md:text-lg italic mb-3 sm:mb-4 px-2" style={{ color: 'var(--text)' }}>
               "{data.quote.text}"
             </p>
-            <p className="text-sm font-semibold" style={{ color: 'var(--secondary)' }}>
+            <p className="text-xs sm:text-sm font-semibold px-2" style={{ color: 'var(--secondary)' }}>
               {data.quote.source}
             </p>
           </div>
@@ -522,125 +532,125 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
 
       {/* ====== CHILD PROFILE ====== */}
       <Section>
-        <div className="text-center mb-8">
-          <p className="text-sm uppercase tracking-[3px] mb-2" style={{ color: 'var(--secondary)' }}>Profil</p>
-          <h2 className="section-title text-3xl md:text-4xl">Yang Bersangkutan</h2>
+        <div className="text-center mb-6 sm:mb-8">
+          <p className="text-xs sm:text-sm uppercase tracking-[3px] mb-2" style={{ color: 'var(--secondary)' }}>Profil</p>
+          <h2 className="section-title text-2xl sm:text-3xl md:text-4xl">Yang Bersangkutan</h2>
           <OrnamentBorder type={data.ornamentId} />
         </div>
 
-        <div className="card-elegant p-8">
+        <div className="card-elegant p-4 sm:p-6 md:p-8">
           <div className="flex flex-col items-center">
-            <div className="w-32 h-32 rounded-full overflow-hidden mb-6 border-3 shadow-lg" style={{ borderColor: 'var(--secondary)' }}>
+            <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full overflow-hidden mb-4 sm:mb-6 border-3 shadow-lg" style={{ borderColor: 'var(--secondary)' }}>
               {data.childName.photo ? (
                 <img src={data.childName.photo} alt={data.childName.full} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-5xl" style={{ background: `linear-gradient(135deg, var(--primary), var(--primary-light))` }}>
+                <div className="w-full h-full flex items-center justify-center text-4xl sm:text-5xl" style={{ background: `linear-gradient(135deg, var(--primary), var(--primary-light))` }}>
                   👦
                 </div>
               )}
             </div>
             
-            <h3 className="font-display text-2xl font-bold mb-1" style={{ color: 'var(--primary)' }}>
+            <h3 className="font-display text-xl sm:text-2xl font-bold mb-1 text-center px-2 break-words" style={{ color: 'var(--primary)' }}>
               {data.childName.full}
             </h3>
-            <p className="text-sm mb-4" style={{ color: 'var(--text-light)' }}>
+            <p className="text-xs sm:text-sm mb-4" style={{ color: 'var(--text-light)' }}>
               Panggilan: "{data.childName.short}"
             </p>
 
-            <div className="w-full space-y-3 text-left">
-              <div className="flex items-start gap-3 p-3 rounded-lg" style={{ background: 'var(--bg)' }}>
-                <Calendar size={18} style={{ color: 'var(--primary)' }} className="mt-0.5 shrink-0" />
+            <div className="w-full space-y-2 sm:space-y-3 text-left">
+              <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg" style={{ background: 'var(--bg)' }}>
+                <Calendar size={16} style={{ color: 'var(--primary)' }} className="mt-0.5 shrink-0" />
                 <div>
                   <p className="text-xs font-semibold" style={{ color: 'var(--text-light)' }}>Tanggal Lahir</p>
-                  <p className="text-sm">{data.childName.birthDate}</p>
+                  <p className="text-xs sm:text-sm">{data.childName.birthDate}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-3 rounded-lg" style={{ background: 'var(--bg)' }}>
-                <Star size={18} style={{ color: 'var(--primary)' }} className="mt-0.5 shrink-0" />
+              <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg" style={{ background: 'var(--bg)' }}>
+                <Star size={16} style={{ color: 'var(--primary)' }} className="mt-0.5 shrink-0" />
                 <div>
                   <p className="text-xs font-semibold" style={{ color: 'var(--text-light)' }}>Umur saat Khitan</p>
-                  <p className="text-sm">{data.childName.age}</p>
+                  <p className="text-xs sm:text-sm">{data.childName.age}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-3 rounded-lg" style={{ background: 'var(--bg)' }}>
-                <Heart size={18} style={{ color: 'var(--primary)' }} className="mt-0.5 shrink-0" />
+              <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg" style={{ background: 'var(--bg)' }}>
+                <Heart size={16} style={{ color: 'var(--primary)' }} className="mt-0.5 shrink-0" />
                 <div>
                   <p className="text-xs font-semibold" style={{ color: 'var(--text-light)' }}>Hobi</p>
-                  <p className="text-sm">{data.childName.hobby}</p>
+                  <p className="text-xs sm:text-sm">{data.childName.hobby}</p>
                 </div>
               </div>
-              <div className="flex items-start gap-3 p-3 rounded-lg" style={{ background: 'var(--bg)' }}>
-                <Moon size={18} style={{ color: 'var(--primary)' }} className="mt-0.5 shrink-0" />
+              <div className="flex items-start gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg" style={{ background: 'var(--bg)' }}>
+                <Moon size={16} style={{ color: 'var(--primary)' }} className="mt-0.5 shrink-0" />
                 <div>
                   <p className="text-xs font-semibold" style={{ color: 'var(--text-light)' }}>Sekolah</p>
-                  <p className="text-sm">{data.childName.school}</p>
+                  <p className="text-xs sm:text-sm">{data.childName.school}</p>
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 p-4 rounded-lg text-center" style={{ background: `linear-gradient(135deg, var(--primary), var(--primary-light))`, color: 'white' }}>
-              <p className="italic text-sm">"{data.childName.quote}"</p>
+            <div className="mt-4 sm:mt-6 p-3 sm:p-4 rounded-lg text-center w-full" style={{ background: `linear-gradient(135deg, var(--primary), var(--primary-light))`, color: 'white' }}>
+              <p className="italic text-xs sm:text-sm">"{data.childName.quote}"</p>
             </div>
           </div>
         </div>
 
         {/* Parents */}
-        <div className="card-elegant p-6 mt-6 text-center">
-          <p className="text-sm mb-2" style={{ color: 'var(--text-light)' }}>Putra dari</p>
-          <p className="font-display text-lg font-semibold" style={{ color: 'var(--primary)' }}>
+        <div className="card-elegant p-4 sm:p-6 mt-4 sm:mt-6 text-center">
+          <p className="text-xs sm:text-sm mb-2" style={{ color: 'var(--text-light)' }}>Putra dari</p>
+          <p className="font-display text-base sm:text-lg font-semibold px-2 break-words" style={{ color: 'var(--primary)' }}>
             {data.parents.father}
           </p>
-          <p className="text-sm my-1" style={{ color: 'var(--text-light)' }}>&</p>
-          <p className="font-display text-lg font-semibold" style={{ color: 'var(--primary)' }}>
+          <p className="text-xs sm:text-sm my-1" style={{ color: 'var(--text-light)' }}>&</p>
+          <p className="font-display text-base sm:text-lg font-semibold px-2 break-words" style={{ color: 'var(--primary)' }}>
             {data.parents.mother}
           </p>
           <OrnamentBorder type={data.ornamentId} />
-          <p className="text-sm" style={{ color: 'var(--text-light)' }}>{data.parents.family}</p>
+          <p className="text-xs sm:text-sm px-2" style={{ color: 'var(--text-light)' }}>{data.parents.family}</p>
         </div>
       </Section>
 
       {/* ====== EVENT DETAILS ====== */}
       <Section id="acara">
-        <div className="text-center mb-8">
-          <p className="text-sm uppercase tracking-[3px] mb-2" style={{ color: 'var(--secondary)' }}>Acara</p>
-          <h2 className="section-title text-3xl md:text-4xl">Waktu & Tempat</h2>
+        <div className="text-center mb-6 sm:mb-8">
+          <p className="text-xs sm:text-sm uppercase tracking-[3px] mb-2" style={{ color: 'var(--secondary)' }}>Acara</p>
+          <h2 className="section-title text-2xl sm:text-3xl md:text-4xl">Waktu & Tempat</h2>
           <OrnamentBorder type={data.ornamentId} />
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {data.events.map((event, idx) => (
             <motion.div
               key={event.id}
-              className="card-elegant p-6"
+              className="card-elegant p-4 sm:p-5 md:p-6"
               initial={{ opacity: 0, x: idx % 2 === 0 ? -30 : 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
             >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0" style={{ background: 'var(--primary)', color: 'white' }}>
-                  {idx === 0 ? <Users size={20} /> : idx === 1 ? <Moon size={20} /> : idx === 2 ? <Gift size={20} /> : <Heart size={20} />}
+              <div className="flex items-start gap-3 sm:gap-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shrink-0" style={{ background: 'var(--primary)', color: 'white' }}>
+                  {idx === 0 ? <Users size={18} /> : idx === 1 ? <Moon size={18} /> : idx === 2 ? <Gift size={18} /> : <Heart size={18} />}
                 </div>
-                <div className="flex-1">
-                  <h3 className="font-display text-lg font-bold mb-1" style={{ color: 'var(--primary)' }}>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-display text-base sm:text-lg font-bold mb-1" style={{ color: 'var(--primary)' }}>
                     {event.name}
                   </h3>
-                  <div className="space-y-2 text-sm" style={{ color: 'var(--text-light)' }}>
+                  <div className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm" style={{ color: 'var(--text-light)' }}>
                     <div className="flex items-center gap-2">
-                      <Calendar size={14} />
+                      <Calendar size={12} className="shrink-0" />
                       <span>{event.date}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Clock size={14} />
+                      <Clock size={12} className="shrink-0" />
                       <span>{event.time}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <MapPin size={14} />
-                      <span>{event.venue}</span>
+                      <MapPin size={12} className="shrink-0" />
+                      <span className="truncate">{event.venue}</span>
                     </div>
-                    <p className="text-xs italic">{event.address}</p>
+                    <p className="text-xs italic break-words">{event.address}</p>
                     {event.note && (
-                      <p className="text-xs px-3 py-1 rounded-full inline-block" style={{ background: 'var(--bg)', color: 'var(--primary)' }}>
+                      <p className="text-xs px-2 sm:px-3 py-1 rounded-full inline-block" style={{ background: 'var(--bg)', color: 'var(--primary)' }}>
                         {event.note}
                       </p>
                     )}
@@ -649,7 +659,7 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
                     href={event.maps}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-3 inline-flex items-center gap-2 text-sm font-semibold"
+                    className="mt-2 sm:mt-3 inline-flex items-center gap-2 text-xs sm:text-sm font-semibold min-h-[44px]"
                     style={{ color: 'var(--primary)' }}
                   >
                     <MapPin size={14} /> Lihat di Google Maps
@@ -681,36 +691,36 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
 
       {/* ====== HIKMAH KHITANAN ====== */}
       <Section>
-        <div className="text-center mb-8">
-          <p className="text-sm uppercase tracking-[3px] mb-2" style={{ color: 'var(--secondary)' }}>Hikmah</p>
-          <h2 className="section-title text-3xl md:text-4xl">Hikmah Khitanan</h2>
+        <div className="text-center mb-6 sm:mb-8">
+          <p className="text-xs sm:text-sm uppercase tracking-[3px] mb-2" style={{ color: 'var(--secondary)' }}>Hikmah</p>
+          <h2 className="section-title text-2xl sm:text-3xl md:text-4xl">Hikmah Khitanan</h2>
           <OrnamentBorder type={data.ornamentId} />
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {data.hikmah.map((item, idx) => (
             <motion.div
               key={idx}
-              className="card-elegant p-6 flex items-start gap-4"
+              className="card-elegant p-4 sm:p-5 md:p-6 flex items-start gap-3 sm:gap-4"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
             >
-              <div className="text-3xl shrink-0">{item.icon}</div>
-              <div>
-                <h3 className="font-display text-lg font-bold mb-1" style={{ color: 'var(--primary)' }}>
+              <div className="text-2xl sm:text-3xl shrink-0">{item.icon}</div>
+              <div className="min-w-0">
+                <h3 className="font-display text-base sm:text-lg font-bold mb-1" style={{ color: 'var(--primary)' }}>
                   {item.title}
                 </h3>
-                <p className="text-sm" style={{ color: 'var(--text-light)' }}>{item.text}</p>
+                <p className="text-xs sm:text-sm leading-relaxed" style={{ color: 'var(--text-light)' }}>{item.text}</p>
               </div>
             </motion.div>
           ))}
         </div>
 
         {/* Islamic Info Card */}
-        <div className="card-elegant p-6 mt-6 text-center" style={{ background: `linear-gradient(135deg, var(--primary), var(--primary-light))` }}>
-          <p className="text-white text-sm italic">
+        <div className="card-elegant p-4 sm:p-6 mt-4 sm:mt-6 text-center" style={{ background: `linear-gradient(135deg, var(--primary), var(--primary-light))` }}>
+          <p className="text-white text-xs sm:text-sm italic px-2">
             "Khitanan adalah sunnah bagi laki-laki dan kemuliaan bagi wanita."
           </p>
           <p className="text-white/80 text-xs mt-2">HR. Ahmad</p>
@@ -719,13 +729,13 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
 
       {/* ====== GALLERY ====== */}
       <Section id="galeri">
-        <div className="text-center mb-8">
-          <p className="text-sm uppercase tracking-[3px] mb-2" style={{ color: 'var(--secondary)' }}>Galeri</p>
-          <h2 className="section-title text-3xl md:text-4xl">Momen Bahagia</h2>
+        <div className="text-center mb-6 sm:mb-8">
+          <p className="text-xs sm:text-sm uppercase tracking-[3px] mb-2" style={{ color: 'var(--secondary)' }}>Galeri</p>
+          <h2 className="section-title text-2xl sm:text-3xl md:text-4xl">Momen Bahagia</h2>
           <OrnamentBorder type={data.ornamentId} />
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
           {galleryImages.map((img, idx) => (
             <motion.div
               key={idx}
@@ -737,12 +747,12 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
               onClick={() => setLightboxImage(img.src || `gradient-${idx}`)}
             >
               {img.src ? (
-                <img src={img.src} alt={img.caption} className="w-full h-full object-cover" />
+                <img src={img.src} alt={img.caption} className="w-full h-full object-cover" loading="lazy" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-white text-center p-2" style={{ background: (img as any).gradient || 'linear-gradient(135deg, var(--primary), var(--primary-light))' }}>
                   <div>
-                    <span className="text-3xl mb-2 block">📸</span>
-                    <span className="text-xs">{img.caption}</span>
+                    <span className="text-2xl sm:text-3xl mb-1 sm:mb-2 block">📸</span>
+                    <span className="text-[10px] sm:text-xs leading-tight">{img.caption}</span>
                   </div>
                 </div>
               )}
@@ -779,30 +789,30 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
 
       {/* ====== GIFTS ====== */}
       <Section>
-        <div className="text-center mb-8">
-          <p className="text-sm uppercase tracking-[3px] mb-2" style={{ color: 'var(--secondary)' }}>Hadiah</p>
-          <h2 className="section-title text-3xl md:text-4xl">Hadiah & Kado</h2>
+        <div className="text-center mb-6 sm:mb-8">
+          <p className="text-xs sm:text-sm uppercase tracking-[3px] mb-2" style={{ color: 'var(--secondary)' }}>Hadiah</p>
+          <h2 className="section-title text-2xl sm:text-3xl md:text-4xl">Hadiah & Kado</h2>
           <OrnamentBorder type={data.ornamentId} />
-          <p className="text-sm mt-4" style={{ color: 'var(--text-light)' }}>
+          <p className="text-xs sm:text-sm mt-4 px-2" style={{ color: 'var(--text-light)' }}>
             Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Namun jika Anda ingin memberikan hadiah, kami menyediakan amplop digital berikut:
           </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {data.gifts.map((gift, idx) => (
-            <div key={idx} className="card-elegant p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-bold text-lg" style={{ color: 'var(--primary)' }}>{gift.bank}</p>
-                  <p className="font-mono text-lg mt-1">{gift.number}</p>
-                  <p className="text-sm" style={{ color: 'var(--text-light)' }}>a.n. {gift.holder}</p>
+            <div key={idx} className="card-elegant p-4 sm:p-5 md:p-6">
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="font-bold text-base sm:text-lg" style={{ color: 'var(--primary)' }}>{gift.bank}</p>
+                  <p className="font-mono text-base sm:text-lg mt-1 break-all">{gift.number}</p>
+                  <p className="text-xs sm:text-sm" style={{ color: 'var(--text-light)' }}>a.n. {gift.holder}</p>
                 </div>
                 <button
                   onClick={() => copyToClipboard(gift.number, gift.bank)}
-                  className="w-12 h-12 rounded-full flex items-center justify-center transition-all"
+                  className="w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all shrink-0"
                   style={{ background: copiedBank === gift.bank ? '#10b981' : 'var(--primary)', color: 'white' }}
                 >
-                  {copiedBank === gift.bank ? <Check size={20} /> : <Copy size={20} />}
+                  {copiedBank === gift.bank ? <Check size={18} /> : <Copy size={18} />}
                 </button>
               </div>
             </div>
@@ -810,12 +820,12 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
         </div>
 
         {/* Address */}
-        <div className="card-elegant p-6 mt-4">
-          <div className="flex items-start gap-3">
-            <MapPin size={20} style={{ color: 'var(--primary)' }} className="shrink-0 mt-1" />
-            <div>
-              <p className="font-bold mb-1" style={{ color: 'var(--primary)' }}>Kirim Kado</p>
-              <p className="text-sm" style={{ color: 'var(--text-light)' }}>{data.giftAddress}</p>
+        <div className="card-elegant p-4 sm:p-5 md:p-6 mt-3 sm:mt-4">
+          <div className="flex items-start gap-2 sm:gap-3">
+            <MapPin size={18} style={{ color: 'var(--primary)' }} className="shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <p className="font-bold text-sm sm:text-base mb-1" style={{ color: 'var(--primary)' }}>Kirim Kado</p>
+              <p className="text-xs sm:text-sm break-words" style={{ color: 'var(--text-light)' }}>{data.giftAddress}</p>
             </div>
           </div>
         </div>
@@ -823,33 +833,33 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
 
       {/* ====== RSVP & MESSAGES ====== */}
       <Section id="rsvp">
-        <div className="text-center mb-8">
-          <p className="text-sm uppercase tracking-[3px] mb-2" style={{ color: 'var(--secondary)' }}>RSVP</p>
-          <h2 className="section-title text-3xl md:text-4xl">Konfirmasi & Ucapan</h2>
+        <div className="text-center mb-6 sm:mb-8">
+          <p className="text-xs sm:text-sm uppercase tracking-[3px] mb-2" style={{ color: 'var(--secondary)' }}>RSVP</p>
+          <h2 className="section-title text-2xl sm:text-3xl md:text-4xl">Konfirmasi & Ucapan</h2>
           <OrnamentBorder type={data.ornamentId} />
         </div>
 
         {/* Form */}
-        <div className="card-elegant p-6 mb-6">
-          <form onSubmit={handleSubmitMessage} className="space-y-4">
+        <div className="card-elegant p-4 sm:p-5 md:p-6 mb-4 sm:mb-6">
+          <form onSubmit={handleSubmitMessage} className="space-y-3 sm:space-y-4">
             <div>
-              <label className="text-sm font-semibold block mb-1" style={{ color: 'var(--text-light)' }}>Nama</label>
+              <label className="text-xs sm:text-sm font-semibold block mb-1" style={{ color: 'var(--text-light)' }}>Nama</label>
               <input
                 type="text"
                 value={newMessage.name}
                 onChange={e => setNewMessage(p => ({ ...p, name: e.target.value }))}
                 placeholder="Nama Anda"
-                className="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border focus:outline-none focus:ring-2 text-sm"
                 style={{ borderColor: 'var(--primary)', '--tw-ring-color': 'var(--primary)' } as any}
               />
             </div>
             <div>
-              <label className="text-sm font-semibold block mb-1" style={{ color: 'var(--text-light)' }}>Konfirmasi Kehadiran</label>
-              <div className="flex gap-3">
+              <label className="text-xs sm:text-sm font-semibold block mb-1" style={{ color: 'var(--text-light)' }}>Konfirmasi Kehadiran</label>
+              <div className="flex gap-2 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => setNewMessage(p => ({ ...p, attendance: 'hadir' }))}
-                  className="flex-1 py-3 rounded-lg font-semibold text-sm transition-all"
+                  className="flex-1 py-2.5 sm:py-3 rounded-lg font-semibold text-xs sm:text-sm transition-all min-h-[44px]"
                   style={{
                     background: newMessage.attendance === 'hadir' ? 'var(--primary)' : 'transparent',
                     color: newMessage.attendance === 'hadir' ? 'white' : 'var(--primary)',
@@ -861,7 +871,7 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
                 <button
                   type="button"
                   onClick={() => setNewMessage(p => ({ ...p, attendance: 'tidak' }))}
-                  className="flex-1 py-3 rounded-lg font-semibold text-sm transition-all"
+                  className="flex-1 py-2.5 sm:py-3 rounded-lg font-semibold text-xs sm:text-sm transition-all min-h-[44px]"
                   style={{
                     background: newMessage.attendance === 'tidak' ? '#ef4444' : 'transparent',
                     color: newMessage.attendance === 'tidak' ? 'white' : '#ef4444',
@@ -874,31 +884,31 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
             </div>
             {newMessage.attendance === 'hadir' && (
               <div>
-                <label className="text-sm font-semibold block mb-1" style={{ color: 'var(--text-light)' }}>Jumlah Tamu</label>
+                <label className="text-xs sm:text-sm font-semibold block mb-1" style={{ color: 'var(--text-light)' }}>Jumlah Tamu</label>
                 <input
                   type="number"
                   min="1"
                   max="10"
                   value={newMessage.count}
                   onChange={e => setNewMessage(p => ({ ...p, count: parseInt(e.target.value) || 1 }))}
-                  className="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2"
+                  className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border focus:outline-none focus:ring-2 text-sm"
                   style={{ borderColor: 'var(--primary)' }}
                 />
               </div>
             )}
             <div>
-              <label className="text-sm font-semibold block mb-1" style={{ color: 'var(--text-light)' }}>Ucapan & Doa</label>
+              <label className="text-xs sm:text-sm font-semibold block mb-1" style={{ color: 'var(--text-light)' }}>Ucapan & Doa</label>
               <textarea
                 value={newMessage.message}
                 onChange={e => setNewMessage(p => ({ ...p, message: e.target.value }))}
                 placeholder="Tulis ucapan dan doa untuk anak kami..."
-                rows={4}
-                className="w-full px-4 py-3 rounded-lg border focus:outline-none focus:ring-2 resize-none"
+                rows={3}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border focus:outline-none focus:ring-2 resize-none text-sm"
                 style={{ borderColor: 'var(--primary)' }}
               />
             </div>
-            <button type="submit" className="btn-primary w-full justify-center">
-              <Send size={18} />
+            <button type="submit" className="btn-primary w-full justify-center text-sm sm:text-base">
+              <Send size={16} />
               Kirim Ucapan
             </button>
           </form>
@@ -906,11 +916,11 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
 
         {/* Message Wall */}
         <div className="space-y-3">
-          <h3 className="font-display text-xl font-bold text-center" style={{ color: 'var(--primary)' }}>
+          <h3 className="font-display text-lg sm:text-xl font-bold text-center" style={{ color: 'var(--primary)' }}>
             Dinding Ucapan ({messages.length})
           </h3>
           {messages.length === 0 ? (
-            <p className="text-center text-sm" style={{ color: 'var(--text-light)' }}>Belum ada ucapan. Jadilah yang pertama!</p>
+            <p className="text-center text-xs sm:text-sm" style={{ color: 'var(--text-light)' }}>Belum ada ucapan. Jadilah yang pertama!</p>
           ) : (
             messages.map(msg => (
               <motion.div
@@ -919,15 +929,15 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <p className="font-semibold text-sm" style={{ color: 'var(--primary)' }}>{msg.name}</p>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${msg.attendance === 'hadir' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <p className="font-semibold text-xs sm:text-sm truncate" style={{ color: 'var(--primary)' }}>{msg.name}</p>
+                  <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${msg.attendance === 'hadir' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                     {msg.attendance === 'hadir' ? '✓ Hadir' : '✗ Tidak Hadir'}
-                    {msg.attendance === 'hadir' && ` (${msg.count} orang)`}
+                    {msg.attendance === 'hadir' && ` (${msg.count})`}
                   </span>
                 </div>
-                <p className="text-sm" style={{ color: 'var(--text-light)' }}>{msg.message}</p>
-                <p className="text-xs mt-2" style={{ color: 'var(--text-light)', opacity: 0.6 }}>
+                <p className="text-xs sm:text-sm leading-relaxed" style={{ color: 'var(--text-light)' }}>{msg.message}</p>
+                <p className="text-[10px] sm:text-xs mt-2" style={{ color: 'var(--text-light)', opacity: 0.6 }}>
                   {new Date(msg.timestamp).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                 </p>
               </motion.div>
@@ -937,7 +947,7 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
       </Section>
 
       {/* ====== FOOTER ====== */}
-      <div className="py-16 pb-24 md:pb-16 px-4 text-center" style={{ background: `linear-gradient(180deg, var(--bg), var(--primary))` }}>
+      <div className="py-12 sm:py-16 pb-24 md:pb-16 px-4 text-center" style={{ background: `linear-gradient(180deg, var(--bg), var(--primary))` }}>
         <div className="max-w-md mx-auto">
           <IslamicOrnament type="kaligrafi-bismillah" />
           
@@ -946,27 +956,27 @@ function MainInvitation({ data, guestName }: { data: InvitationData; guestName: 
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
           >
-            <p className="text-lg mb-4" style={{ color: 'rgba(255,255,255,0.9)' }}>
+            <p className="text-sm sm:text-base md:text-lg mb-4 px-2" style={{ color: 'rgba(255,255,255,0.9)' }}>
               Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir untuk memberikan doa restu.
             </p>
             
-            <p className="text-white/70 text-sm mb-2">Atas kehadiran dan doa restunya, kami ucapkan terima kasih.</p>
+            <p className="text-white/70 text-xs sm:text-sm mb-2 px-2">Atas kehadiran dan doa restunya, kami ucapkan terima kasih.</p>
             
-            <div className="ornament-divider my-6">
-              <Heart size={16} style={{ color: 'var(--secondary)' }} />
+            <div className="ornament-divider my-4 sm:my-6">
+              <Heart size={14} style={{ color: 'var(--secondary)' }} />
             </div>
 
-            <p className="font-display text-2xl font-bold text-white mb-2">
+            <p className="font-display text-xl sm:text-2xl font-bold text-white mb-2 px-2 break-words">
               {data.parents.father} & {data.parents.mother}
             </p>
-            <p className="text-white/70 text-sm">{data.parents.family}</p>
+            <p className="text-white/70 text-xs sm:text-sm px-2">{data.parents.family}</p>
 
-            <div className="mt-8 p-4 rounded-lg" style={{ background: 'rgba(255,255,255,0.1)' }}>
-              <p className="arabic-text text-xl text-white/90">
+            <div className="mt-6 sm:mt-8 p-3 sm:p-4 rounded-lg" style={{ background: 'rgba(255,255,255,0.1)' }}>
+              <p className="arabic-text text-lg sm:text-xl text-white/90">
                 جَزَاكُمُ اللَّهُ خَيْرًا
               </p>
-              <p className="text-white/70 text-sm mt-2">Jazakumullahu Khairan</p>
-              <p className="text-white/60 text-xs mt-1">Semoga Allah membalas kebaikan Anda</p>
+              <p className="text-white/70 text-xs sm:text-sm mt-2">Jazakumullahu Khairan</p>
+              <p className="text-white/60 text-[10px] sm:text-xs mt-1">Semoga Allah membalas kebaikan Anda</p>
             </div>
           </motion.div>
         </div>
@@ -1011,31 +1021,31 @@ function AdminPanel({ data, onClose }: { data: InvitationData; onClose: () => vo
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      <div className="min-h-screen p-4 flex items-start justify-center pt-8">
+      <div className="min-h-screen p-2 sm:p-4 flex items-start justify-center pt-2 sm:pt-8">
         <motion.div
-          className="w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden"
+          className="w-full max-w-2xl bg-white rounded-xl sm:rounded-2xl shadow-2xl overflow-hidden"
           initial={{ scale: 0.9, y: 20 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.9, y: 20 }}
         >
           {/* Header */}
-          <div className="p-4 flex items-center justify-between" style={{ background: 'var(--primary)', color: 'white' }}>
+          <div className="p-3 sm:p-4 flex items-center justify-between sticky top-0 z-10" style={{ background: 'var(--primary)', color: 'white' }}>
             <div className="flex items-center gap-2">
-              <Settings size={20} />
-              <h2 className="font-bold text-lg">Admin Panel</h2>
+              <Settings size={18} />
+              <h2 className="font-bold text-base sm:text-lg">Admin Panel</h2>
             </div>
-            <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors">
+            <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center">
               <X size={20} />
             </button>
           </div>
 
           {/* Tabs */}
-          <div className="flex overflow-x-auto border-b">
+          <div className="flex overflow-x-auto border-b -webkit-overflow-scrolling-touch">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-3 text-sm font-semibold whitespace-nowrap transition-all ${activeTab === tab.id ? 'border-b-2' : 'opacity-60'}`}
+                className={`px-3 sm:px-4 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${activeTab === tab.id ? 'border-b-2' : 'opacity-60'}`}
                 style={{ borderColor: activeTab === tab.id ? 'var(--primary)' : 'transparent', color: activeTab === tab.id ? 'var(--primary)' : undefined }}
               >
                 {tab.icon} {tab.label}
@@ -1044,27 +1054,27 @@ function AdminPanel({ data, onClose }: { data: InvitationData; onClose: () => vo
           </div>
 
           {/* Content */}
-          <div className="p-4 max-h-[60vh] overflow-y-auto">
+          <div className="p-3 sm:p-4 max-h-[60vh] overflow-y-auto">
             {activeTab === 'data' && (
-              <div className="space-y-4">
-                <h3 className="font-bold" style={{ color: 'var(--primary)' }}>Info Anak</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-3 sm:space-y-4">
+                <h3 className="font-bold text-sm sm:text-base" style={{ color: 'var(--primary)' }}>Info Anak</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                   <div>
-                    <label className="text-xs font-semibold text-gray-500">Nama Lengkap</label>
+                    <label className="text-[10px] sm:text-xs font-semibold text-gray-500">Nama Lengkap</label>
                     <input
                       type="text"
                       value={editData.childName.full}
                       onChange={e => setEditData(p => ({ ...p, childName: { ...p.childName, full: e.target.value } }))}
-                      className="w-full px-3 py-2 border rounded-lg text-sm"
+                      className="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-gray-500">Nama Panggilan</label>
+                    <label className="text-[10px] sm:text-xs font-semibold text-gray-500">Nama Panggilan</label>
                     <input
                       type="text"
                       value={editData.childName.short}
                       onChange={e => setEditData(p => ({ ...p, childName: { ...p.childName, short: e.target.value } }))}
-                      className="w-full px-3 py-2 border rounded-lg text-sm"
+                      className="w-full px-3 py-2 border rounded-lg text-xs sm:text-sm"
                     />
                   </div>
                   <div>
@@ -1351,12 +1361,12 @@ function AdminPanel({ data, onClose }: { data: InvitationData; onClose: () => vo
           </div>
 
           {/* Footer */}
-          <div className="p-4 border-t flex items-center justify-between">
-            <button onClick={onClose} className="text-sm text-gray-500 hover:text-gray-700">
+          <div className="p-3 sm:p-4 border-t flex items-center justify-between gap-2 sticky bottom-0 bg-white">
+            <button onClick={onClose} className="text-xs sm:text-sm text-gray-500 hover:text-gray-700 px-3 py-2 min-h-[44px]">
               Tutup
             </button>
-            <button onClick={handleSave} className="btn-primary text-sm">
-              {saved ? <><Check size={16} /> Tersimpan!</> : <>💾 Simpan Perubahan</>}
+            <button onClick={handleSave} className="btn-primary text-xs sm:text-sm">
+              {saved ? <><Check size={14} /> Tersimpan!</> : <>💾 Simpan</>}
             </button>
           </div>
         </motion.div>
